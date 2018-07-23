@@ -52,29 +52,30 @@ type Point struct {
 	Y float64 `json:"lng"`
 }
 */
-type PgQuery struct {
-	pgconn *sql.DB
+type Pgconfig struct {
+	User	string
+	Pass	string
+	Host	string
+	Port	string
+	Dbname	string
+	Sslmodel string
 }
 
-func (p *PgQuery) GetTrackNumber() []string {
-	
+type DataModel struct {
+	PackageId string
 }
 
-func (p *PgQuery)GetAllData()  {
-	
-}
+func (pg *Pgconfig)Connect() *sql.DB {
 
-func connect(user, pass, host, port, dbname string) *PgQuery {
-
-	pgurl := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", user, pass, host, port, dbname)
+	pgurl := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%S", pg.User, pg.Pass, pg.Host, pg.Port, pg.Sslmodel, )
 
 	db, err := sql.Open("postgres", pgurl)
 	if err != nil {
 		panic(fmt.Errorf("Connected database error:%v", err))
 	}
-	
-	return &PgQuery{db}
-
+	return db
+}
+/*
 	querySql := `SELECT package_id FROM journey_last_miles LIMIT 10`
 	rows, err := db.Query(querySql)
 	if err != nil {
@@ -84,20 +85,17 @@ func connect(user, pass, host, port, dbname string) *PgQuery {
 	for rows.Next() {
 		agent := &Agent{}
 		//agent := &Agent{Coordinate: &Point{}}
-		/*
 		err = rows.Scan(&agent.Id,
 			&agent.Name, &agent.Code,
 			&agent.CS_NO, &agent.Channel_id,
 			&agent.Address, agent.Coordinate)
-		*/
 		err = rows.Scan(&agent.Package_id)
 		fmt.Println(agent, err)
 	}
-	/*
 	var id int
 	err = db.QueryRow("INSERT INTO t_agent (name, code, cs_no, address, coordinate) VALUES($1,$2,$3,$4,$5) RETURNING id",
 		"test1", "123457", "2", "111", "(12,43)").Scan(&id)
 
 	fmt.Println("id:", id, "err:", err)
-	*/
 }
+*/

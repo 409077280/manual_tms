@@ -1,4 +1,4 @@
-package main
+package ttime
 
 import (
 	"fmt"
@@ -24,7 +24,7 @@ const (
 	StampNano  = "Jan _2 15:04:05.000000000"
 )
 */
-func main() {
+func test() {
 	a := []int{1,2,3,4}
 	b := []int{2,3,4}
 	if a != b {

@@ -6,17 +6,18 @@ import (
 	"database/sql"
 )
 
-func (pg *Pgconfig)GetPackageIdList(data []DataModel) {
+func (pg *Pgconfig)GetPackageIdList(data []DataModel,list []string) {
 	condition := ""
 	packageid := sql.NullString{}
+	trackNb := sql.NullString{}
 
-	for i := 0; i < len(data); i++ {
-		if last := len(data) -1;i == last {
-			condition = `'` + data[i].PackageId + `'`
+	for i := 0; i < len(list); i++ {
+		if last := len(list) -1;i == last {
+			condition = `'` + list[i] + `'`
 		}
-		condition = `'` + data[i].PackageId + `',`
+		condition = `'` + list[i] + `',`
 	}
-	db := pg.Connect()
+	db := pg.connect()
 	defer db.Close()
 
 	query := fmt.Sprintf("SELECT package_id FROM journey_last_miles WHERE tracking_number in (%s)", condition)
@@ -29,11 +30,12 @@ func (pg *Pgconfig)GetPackageIdList(data []DataModel) {
 
 	for row.Next() {
 		e := DataModel{}
-		err = row.Scan(&packageid)
+		err = row.Scan(&packageid, &trackNb)
 		if err != nil {
 			log.Fatal(err)
 		}
 		e.PackageId = packageid.String
+		e.TrackNumber = trackNb.String
 		data = append(data,e)
 	}
 

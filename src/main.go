@@ -1,11 +1,12 @@
 package main
 
 import (
-	"rwfile"
 	"loadcfg"
 	"rwfile"
 	"tmsctl"
 	"datactl"
+//	"loadcfg"
+	"fmt"
 )
 type Manual interface {
 	ReadData() []string
@@ -27,7 +28,7 @@ func (d *Do)ReadData(filename string)  {
 }
 
 func (d *Do)WrtieLost()  {
-	datactl.CheckLost(d.GetData,)
+//	datactl.CheckLost(d.GetData,)
 }
 
 func (d Do)WritePass()  {
@@ -38,13 +39,39 @@ func (d Do)WriteNoPass()  {
 
 }
 
+
 func main() {
-	var manual Manual
+	base := rwfile.FileControl{"base.txt","Checklost"}
+	bs := base.ReadFileToMap()
+	basenew := rwfile.FileControl{"basenew.txt","No same"}
+	bn := basenew.ReadFileToMap()
+	base.WriteListToFile(datactl.CheckLost(bs,bn))
+	return
+	rw := rwfile.FileControl{"in.txt","No same"}
+	list := datactl.Deletesame(rw.ReadFileToMap())
+	rw.WriteListToFile(list)
+	return
+	config := loadcfg.IniConfig{}
+	config.ReadConfig("config.ini")
+
+	pg := &tmsctl.Pgconfig{User:config.Data["username"],
+	Pass:config.Data["password"],
+	Host:config.Data["hostname"],
+	Port:config.Data["port"],
+	Dbname:config.Data["database"],
+	Sslmodel:config.Data["sslmodel"],
+	}
+	tmsList := []tmsctl.DataModel{}
+	pg.GetPackageIdList(tmsList, list)
+
+	fmt.Println(tmsList)
+
+/*	var manual Manual
 	conf := new(loadcfg.IniConfig)
 	conf.ReadConfig("./config.ini")
 
 
 	do := new(Do)
 	do.ReadData("./1.txt")
-
+*/
 }

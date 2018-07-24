@@ -38,7 +38,7 @@ func (f FileControl)ReadFileToMap() []string {
 }
 
 func (f FileControl)WriteListToFile(list []string) {
-	name := fmt.Sprintf("%s-%v",f.Writename, time.Now().Format("2006-01-02T15:04:05")) + ".csv"
+	name := fmt.Sprintf("%s-%v",f.Writename, time.Now().Format("2006-01-02")) + ".csv"
 	wfile, error := os.Create(name)
 	defer wfile.Close()
 	if error != nil {

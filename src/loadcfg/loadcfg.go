@@ -8,15 +8,28 @@ import(
 	"fmt"
 )
 
-type IniConfig struct {
-	Data   map[string]string
-	Strcet string
+var Config = map[string]string{}
+
+const defaultpath = "./config.ini"
+
+func pathExists(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, err
 }
 
-func (c *IniConfig) ReadConfig(filename string) {
-	c.Data = make(map[string]string)
 
-	file, err := os.Open(filename)
+func init() {
+	b, e := pathExists(defaultpath)
+	if b != true || e != nil {
+		panic("Please check your config file : './config.ini'")
+	}
+	file, err := os.Open(defaultpath)
 	if err != nil {
 		panic(err)
 	}
@@ -24,6 +37,7 @@ func (c *IniConfig) ReadConfig(filename string) {
 	defer file.Close()
 	r := bufio.NewReader(file)
 
+	var strcet string
 	for {
 		tmp, _, err := r.ReadLine()
 		if err != nil {
@@ -51,11 +65,11 @@ func (c *IniConfig) ReadConfig(filename string) {
 		//if tag1index > -1 && tag2index > -1 && tag2index > tag1index+1 {
 		//如果出现[]且符合结构，返回索引名称
 		if tag1index > -1 && tag2index > tag1index+1 {
-			c.Strcet = strings.TrimSpace(s[tag1index+1 : tag2index])
+			strcet = strings.TrimSpace(s[tag1index+1 : tag2index])
 			continue  //??
 		}
 		//如果没有索引，视为无效配置
-		if len(c.Strcet) == 0 {
+		if len(strcet) == 0 {
 			continue
 		}
 
@@ -85,13 +99,15 @@ func (c *IniConfig) ReadConfig(filename string) {
 			value = strings.TrimSpace(value[0:pos])
 		}
 
-		key := name
-		c.Data[key] = value
+		Config[name] = value
 	}
 }
 
 
-func (c IniConfig) List()  {
+func List()  {
+	if len(Config) == 0 {
+		panic("Config not set.")
+	}
 	keytb := 30
 	valtb := 40
 	var space string
@@ -99,7 +115,7 @@ func (c IniConfig) List()  {
 		space += "-"
 	}
 	fmt.Printf("%s\n",space)
-	for k, v := range c.Data {
+	for k, v := range Config {
 		k = "  " + k
 		v = "  " + v
 		spacelen := keytb - len(k) -2

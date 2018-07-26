@@ -3,10 +3,7 @@ package main
 import (
 	"loadcfg"
 	"rwfile"
-	"tmsctl"
 	"datactl"
-//	"loadcfg"
-	"fmt"
 )
 type Manual interface {
 	ReadData() []string
@@ -41,6 +38,8 @@ func (d Do)WriteNoPass()  {
 
 
 func main() {
+	loadcfg.List()
+	return
 	base := rwfile.FileControl{"base.txt","Checklost"}
 	bs := base.ReadFileToMap()
 	basenew := rwfile.FileControl{"basenew.txt","No same"}
@@ -51,6 +50,7 @@ func main() {
 	list := datactl.Deletesame(rw.ReadFileToMap())
 	rw.WriteListToFile(list)
 	return
+	/*
 	config := loadcfg.IniConfig{}
 	config.ReadConfig("config.ini")
 
@@ -65,7 +65,7 @@ func main() {
 	pg.GetPackageIdList(tmsList, list)
 
 	fmt.Println(tmsList)
-
+*/
 /*	var manual Manual
 	conf := new(loadcfg.IniConfig)
 	conf.ReadConfig("./config.ini")

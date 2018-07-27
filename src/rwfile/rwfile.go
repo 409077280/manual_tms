@@ -13,7 +13,7 @@ type FileControl struct {
 	Writename string
 }
 
-func (f FileControl)ReadFileToMap() []string {
+func (f FileControl)ReadFileToList() []string {
 	file, err := os.Open(f.Readname)
 	if err != nil {
 		panic(err)

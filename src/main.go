@@ -38,8 +38,6 @@ func (d Do)WriteNoPass()  {
 
 
 func main() {
-	loadcfg.List()
-	return
 	base := rwfile.FileControl{"base.txt","Checklost"}
 	bs := base.ReadFileToMap()
 	basenew := rwfile.FileControl{"basenew.txt","No same"}
